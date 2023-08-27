@@ -1,11 +1,10 @@
-package ru.netology;
+package ru.netology.page;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
-
+import ru.netology.data.DataHelper;
 
 import java.time.Duration;
-
 
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
@@ -27,15 +26,6 @@ public class TransferPage {
     public void makeTransfer(String amountToTransfer, DataHelper.CardInfo cardInfo) {
         amountInput.setValue(amountToTransfer);
         fromInput.setValue(cardInfo.getCardNumber());
-        transferButton.click();
-    }
-
-    public void makeTransferError(String amountToTransfer, DataHelper.CardInfo cardInfo) {
-        amountInput.setValue(amountToTransfer);
-        long first15 = (long) (Math.random() * 1000000000000000L);
-        String strFirst15 = Long.toString(first15);
-        String errorCard = "0" + strFirst15;
-        fromInput.setValue(errorCard);
         transferButton.click();
     }
 

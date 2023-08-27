@@ -1,11 +1,13 @@
-package ru.netology;
+package ru.netology.test;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.netology.page.DashboardPage;
+import ru.netology.page.LoginPage;
 
 import static com.codeborne.selenide.Selenide.open;
-import static ru.netology.DataHelper.*;
+import static ru.netology.data.DataHelper.*;
 
 
 public class MoneyTransferTest {
@@ -65,14 +67,12 @@ public class MoneyTransferTest {
     void transferFromTheFirstToTheSecondCardWithTheWrongNumberTest() {
         var firstCardInfo = getFirstCard();
         var secondCardInfo = getSecondCard();
+        var invalidCardInfo = getInvalidCard();
         var firstCardBalance = dashboardPage.getCardBalance(firstCardInfo);
         var amount = generalValidAmount(firstCardBalance);
-        dashboardPage.selectCardToTransfer(secondCardInfo);
-
-        TransferPage error = new TransferPage();
-        error.makeTransferError(String.valueOf(amount), firstCardInfo);
-        error.findErrorMessageContent("Ошибка! Произошла ошибка", "Ошибка");
-
+        var transferPage = dashboardPage.selectCardToTransfer(secondCardInfo);
+        transferPage.makeTransfer(String.valueOf(amount), invalidCardInfo);
+        transferPage.findErrorMessageContent("Ошибка! Произошла ошибка", "Ошибка");
     }
 
     @Test
@@ -81,11 +81,10 @@ public class MoneyTransferTest {
         var secondCardInfo = getSecondCard();
         var firstCardBalance = dashboardPage.getCardBalance(firstCardInfo);
         var amount = generalInvalidAmount(firstCardBalance);
-        dashboardPage.selectCardToTransfer(secondCardInfo);
+        var transferPage = dashboardPage.selectCardToTransfer(secondCardInfo);
+        transferPage.makeTransfer(String.valueOf(amount), firstCardInfo);
+        transferPage.findErrorMessageContent("Сумма перевода превышает остаток на карте списания", "Ошибка");
 
-        TransferPage error = new TransferPage();
-        error.makeTransfer(String.valueOf(amount), firstCardInfo);
-        error.findErrorMessageContent("Сумма перевода превышает остаток на карте списания", "Ошибка");
 
     }
 
